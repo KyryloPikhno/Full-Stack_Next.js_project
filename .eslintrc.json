@@ -1,3 +1,31 @@
 {
-  "extends": "next/core-web-vitals"
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "next",
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 2020,
+    "project": "tsconfig.json"
+  },
+  "plugins": ["@typescript-eslint", "react", "simple-import-sort", "sort-keys-fix"],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": 0,
+    "react/jsx-sort-props": "error",
+    "simple-import-sort/imports": "error",
+    "sort-keys-fix/sort-keys-fix": "warn",
+    "sort-vars": 2,
+    "@next/next/no-img-element": 0,
+    "@next/next/no-page-custom-font": 0
+  }
 }
