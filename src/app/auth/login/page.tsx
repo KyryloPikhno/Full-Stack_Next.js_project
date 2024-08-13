@@ -1,5 +1,6 @@
 "use client"
 import { yupResolver } from "@hookform/resolvers/yup"
+import { useRouter } from "next/navigation"
 import { signIn } from "next-auth/react"
 import { useForm } from "react-hook-form"
 import * as yup from "yup"
@@ -18,6 +19,8 @@ const loginSchema = yup.object().shape({
 })
 
 const Login = () => {
+  const router = useRouter()
+
   const {
     register,
     setError,
@@ -41,7 +44,7 @@ const Login = () => {
       }
 
       if (res?.ok) {
-        window.location.href = "/todos"
+        router.push("/todos")
       }
     } catch (error) {
       console.log("error", error)

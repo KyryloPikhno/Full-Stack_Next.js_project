@@ -1,6 +1,7 @@
 "use client"
 import { yupResolver } from "@hookform/resolvers/yup"
 import bcrypt from "bcryptjs"
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import * as yup from "yup"
 
@@ -26,6 +27,8 @@ const registrationSchema = yup.object().shape({
 })
 
 const Register = () => {
+  const router = useRouter()
+
   const {
     register,
     setError,
@@ -58,14 +61,14 @@ const Register = () => {
         return
       }
 
-      window.location.href = "/auth/login"
+      if (res?.ok) {
+        router.push("/auth/login")
+      }
     } catch (error) {
       console.log("error", error)
       setError("root", { message: "Something went wrong. Try again.", type: "manual" })
     }
   }
-
-  console.log("errors", errors)
 
   return (
     <div>
