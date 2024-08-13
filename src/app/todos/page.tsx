@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 
 import { DATE_FORMAT_DAY_TIME } from "@/utils/date"
+import AuthWrapper from "@/wrappers/AuthWrapper"
 
 interface ITodo {
   id: string
@@ -83,7 +84,7 @@ const Todos = () => {
   const isLoading = status === "loading"
 
   return (
-    <div>
+    <AuthWrapper>
       <h1>Your Todos</h1>
       {!isLoading ? (
         <ul>
@@ -109,7 +110,7 @@ const Todos = () => {
         <p>loading</p>
       )}
       <button onClick={() => addTodo("New Todo")}>Add Todo</button>
-    </div>
+    </AuthWrapper>
   )
 }
 
