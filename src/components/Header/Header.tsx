@@ -1,3 +1,9 @@
+import LogoutButton from "../LogoutButton/LogoutButton"
+
 export const Header = () => {
-  return <div>Header</div>
+  return (
+    <div>
+      <LogoutButton />
+    </div>
+  )
 }
