@@ -1,19 +1,12 @@
 "use client"
+
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useRouter } from "next/navigation"
 import { signIn } from "next-auth/react"
 import { useForm } from "react-hook-form"
-import * as yup from "yup"
 
 import { ILogin } from "@/interfaces"
-
-const loginSchema = yup.object().shape({
-  email: yup.string().email("Invalid email format").required("Email is required"),
-  password: yup
-    .string()
-    .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
-})
+import { loginSchema } from "@/validation"
 
 const Login = () => {
   const router = useRouter()

@@ -1,25 +1,12 @@
 "use client"
+
 import { yupResolver } from "@hookform/resolvers/yup"
 import bcrypt from "bcryptjs"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
-import * as yup from "yup"
 
 import { IRegister } from "@/interfaces"
-
-const registrationSchema = yup.object().shape({
-  confirmPassword: yup
-    .string()
-    .oneOf([yup.ref("password")], "Passwords must match")
-    .required("Confirm password is required"),
-  email: yup.string().email("Invalid email format").required("Email is required"),
-  firstName: yup.string().required("First name is required"),
-  lastName: yup.string().required("Last name is required"),
-  password: yup
-    .string()
-    .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
-})
+import { registrationSchema } from "@/validation"
 
 const Register = () => {
   const router = useRouter()
