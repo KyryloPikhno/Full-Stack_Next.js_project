@@ -1,5 +1,6 @@
 "use client"
 
+import { Button } from "@radix-ui/themes"
 import { useRouter } from "next/navigation"
 import { signOut } from "next-auth/react"
 
@@ -16,9 +17,12 @@ const LogoutButton = () => {
   }
 
   return (
-    <button className="logout-button" onClick={handleLogout}>
+    <Button
+      className="bg-[#000000] text-white px-4 py-2 rounded-md hover:bg-[#3c3b3b] transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+      onClick={handleLogout}
+    >
       Logout
-    </button>
+    </Button>
   )
 }
 
