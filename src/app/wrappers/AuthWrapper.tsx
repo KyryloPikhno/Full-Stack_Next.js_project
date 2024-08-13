@@ -8,15 +8,13 @@ interface AuthProviderProps {
 }
 
 const AuthWrapper = ({ children }: AuthProviderProps) => {
-  const { data: session } = useSession()
-
-  console.log("status", session)
+  const { data: session, status } = useSession()
 
   useEffect(() => {
-    if (!session?.user) {
+    if (!session?.user && status !== "loading") {
       window.location.href = "/auth/login"
     }
-  }, [session])
+  }, [session, status])
 
   return <>{children}</>
 }

@@ -30,18 +30,22 @@ const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       async authorize(credentials) {
-        const user = await prisma.user.findUnique({
-          where: { email: credentials?.email || "" },
-        })
+        try {
+          const user = await prisma.user.findUnique({
+            where: { email: credentials?.email || "" },
+          })
 
-        if (
-          user &&
-          credentials?.password &&
-          bcrypt.compareSync(credentials.password, user.password)
-        ) {
+          if (!user) {
+            throw new Error("No user found with the given email")
+          }
+
+          if (!credentials?.password || !bcrypt.compareSync(credentials.password, user.password)) {
+            throw new Error("Invalid password")
+          }
+
           return user
-        } else {
-          return null
+        } catch (error) {
+          throw new Error(error?.message)
         }
       },
       credentials: {
