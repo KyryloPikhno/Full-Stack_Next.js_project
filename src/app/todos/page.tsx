@@ -4,7 +4,7 @@ import moment from "moment"
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 
-export const DATE_FORMAT_DAY_TIME = "DD HH:mm"
+import { DATE_FORMAT_DAY_TIME } from "@/utils/date"
 
 interface ITodo {
   id: string
