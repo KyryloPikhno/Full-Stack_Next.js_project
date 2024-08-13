@@ -12,6 +12,8 @@ const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id
         token.email = user.email
+        token.lastName = user.lastName
+        token.firstName = user.firstName
       }
       return token
     },
@@ -19,6 +21,8 @@ const authOptions: NextAuthOptions = {
       if (token) {
         session.user = {
           ...session.user,
+          firstName: token.firstName as string,
+          lastName: token.lastName as string,
           email: token.email as string,
           id: token.id as string,
         }
