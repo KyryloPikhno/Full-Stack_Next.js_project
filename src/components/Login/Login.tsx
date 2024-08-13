@@ -5,10 +5,7 @@ import { signIn } from "next-auth/react"
 import { useForm } from "react-hook-form"
 import * as yup from "yup"
 
-interface ILogin {
-  email: string
-  password: string
-}
+import { ILogin } from "@/interfaces"
 
 const loginSchema = yup.object().shape({
   email: yup.string().email("Invalid email format").required("Email is required"),

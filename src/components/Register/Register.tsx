@@ -5,12 +5,7 @@ import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import * as yup from "yup"
 
-interface IRegisterData {
-  firstName: string
-  lastName: string
-  password: string
-  email: string
-}
+import { IRegister } from "@/interfaces"
 
 const registrationSchema = yup.object().shape({
   confirmPassword: yup
@@ -40,7 +35,7 @@ const Register = () => {
     resolver: yupResolver(registrationSchema),
   })
 
-  const onSubmit = async (data: IRegisterData) => {
+  const onSubmit = async (data: IRegister) => {
     try {
       const hashedPassword = bcrypt.hashSync(data.password, 10)
 

@@ -4,16 +4,8 @@ import moment from "moment"
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 
+import { ITodo } from "@/interfaces"
 import { DATE_FORMAT_DAY_TIME } from "@/utils/date"
-
-interface ITodo {
-  id: string
-  body: string
-  userId: string
-  createdAt: Date
-  updatedAt: Date
-  completed: boolean
-}
 
 const Todos = () => {
   const { data: session, status } = useSession()
