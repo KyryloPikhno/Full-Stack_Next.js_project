@@ -1,5 +1,6 @@
 import "./globals.css"
 
+import { Theme } from "@radix-ui/themes"
 import type { Metadata } from "next"
 import { Roboto_Mono } from "next/font/google"
 
@@ -23,10 +24,12 @@ export default function RootLayout({
   return (
     <SessionWrapper>
       <html lang="en">
-        <body className="flex flex-col items-center justify-between min-h-screen">
-          <Header />
-          <main className={robotoMono.className}>{children}</main>
-          <Footer />
+        <body>
+          <Theme className="flex flex-col items-center justify-between min-h-screen bg-[#fdf6f6]">
+            <Header />
+            <main className={robotoMono.className}>{children}</main>
+            <Footer />
+          </Theme>
         </body>
       </html>
     </SessionWrapper>
