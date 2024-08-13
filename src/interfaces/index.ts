@@ -18,3 +18,9 @@ export interface ITodo {
   updatedAt: Date
   completed: boolean
 }
+
+export interface ITodoProps {
+  todo: ITodo
+  deleteTodo: (value: string) => void
+  updateTodo: (value: string, updatedTodo: { completed: boolean }) => void
+}
