@@ -4,7 +4,7 @@ import moment from "moment"
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 
-export const DATE_FORMAT_DAY_MONTH_TIME = "ddd DD MMM HH:mm"
+export const DATE_FORMAT_DAY_TIME = "DD HH:mm"
 
 interface ITodo {
   id: string
@@ -20,18 +20,23 @@ const Todos = () => {
   const [todos, setTodos] = useState<ITodo[] | []>([])
 
   useEffect(() => {
-    if (status === "authenticated") {
+    if (session) {
       fetchTodos()
     }
-  }, [status])
+  }, [session])
 
   const fetchTodos = async () => {
-    const res = await fetch("/api/todos")
-    const data = await res.json()
-    const sortedTodos = data.sort(
-      (a: ITodo, b: ITodo) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
-    )
-    setTodos(sortedTodos)
+    try {
+      const res = await fetch("/api/todos")
+      if (!res.ok) throw new Error("Failed to fetch todos")
+      const data = await res.json()
+      const sortedTodos = data.sort(
+        (a: ITodo, b: ITodo) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+      )
+      setTodos(sortedTodos)
+    } catch (err) {
+      console.log((err as Error).message)
+    }
   }
 
   const addTodo = async (body: string) => {
@@ -75,33 +80,34 @@ const Todos = () => {
     }
   }
 
-  if (status === "loading") {
-    return <p>Loading...</p>
-  }
-
-  if (status === "unauthenticated") {
-    window.location.href = "/auth/login"
-    return null
-  }
+  const isLoading = status === "loading"
 
   return (
     <div>
       <h1>Your Todos</h1>
-      <ul>
-        {todos.map((todo) => (
-          <li key={todo.id}>
-            {todo.body} {todo.completed.toString()}
-            {moment(todo?.createdAt).format(DATE_FORMAT_DAY_MONTH_TIME)}
-            {moment(todo?.updatedAt).format(DATE_FORMAT_DAY_MONTH_TIME)}
-            <button className="border" onClick={() => updateTodo(todo.id, { completed: true })}>
-              update
-            </button>
-            <button className="border" onClick={() => deleteTodo(todo.id)}>
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
+      {!isLoading ? (
+        <ul>
+          {todos.length ? (
+            todos.map((todo) => (
+              <li key={todo.id}>
+                {todo.body} {todo.completed.toString()}
+                {moment(todo?.createdAt).format(DATE_FORMAT_DAY_TIME)}
+                {moment(todo?.updatedAt).format(DATE_FORMAT_DAY_TIME)}
+                <button className="border" onClick={() => updateTodo(todo.id, { completed: true })}>
+                  update
+                </button>
+                <button className="border" onClick={() => deleteTodo(todo.id)}>
+                  Delete
+                </button>
+              </li>
+            ))
+          ) : (
+            <p>no todos</p>
+          )}
+        </ul>
+      ) : (
+        <p>loading</p>
+      )}
       <button onClick={() => addTodo("New Todo")}>Add Todo</button>
     </div>
   )
