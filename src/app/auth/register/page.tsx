@@ -60,7 +60,8 @@ const Register = () => {
 
       window.location.href = "/auth/login"
     } catch (error) {
-      setError("root", { message: "An error occurred while trying to register.", type: "manual" })
+      console.log("error", error)
+      setError("root", { message: "Something went wrong. Try again.", type: "manual" })
     }
   }
 
