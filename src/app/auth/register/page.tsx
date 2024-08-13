@@ -54,6 +54,7 @@ const Register = () => {
 
       if (!res.ok) {
         const error = await res.json()
+
         setError("email", {
           message: error.error || "An error occurred",
           type: "manual",
@@ -65,7 +66,6 @@ const Register = () => {
         router.push("/auth/login")
       }
     } catch (error) {
-      console.log("error", error)
       setError("root", { message: "Something went wrong. Try again.", type: "manual" })
     }
   }

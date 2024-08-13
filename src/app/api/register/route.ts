@@ -1,9 +1,8 @@
-import { Prisma, PrismaClient } from "@prisma/client"
+import { Prisma } from "@prisma/client"
 import { NextRequest } from "next/server"
 
+import prisma from "@/lib/prisma"
 import { handleError } from "@/utils/handleError"
-
-const prisma = new PrismaClient()
 
 export async function POST(req: NextRequest) {
   try {
