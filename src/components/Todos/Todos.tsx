@@ -1,11 +1,12 @@
 "use client"
 
-import { Button, Separator } from "@radix-ui/themes"
+import { Button } from "@radix-ui/themes"
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 
 import { ITodo } from "@/interfaces"
 
+import { CustomButton } from "../Button/Button"
 import Todo from "../Todo/Todo"
 
 enum STATUS {
@@ -106,26 +107,25 @@ const Todos = () => {
     <div className="p-4 min-h-[80vh] mb-20">
       <h1 className="text-[30px] font-bold mb-4 text-center">Your Todos</h1>
       <div className="flex justify-between mb-4 w-[500px]">
-        <Button
-          className="bg-[#000000] text-white px-4 py-2 rounded-md hover:bg-[#3c3b3b] transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+        <CustomButton
           onClick={() => setFilter(STATUS.ALL)}
-        >
-          {STATUS.ALL}
-        </Button>
-        <Button
-          className="bg-[#000000] text-white px-4 py-2 rounded-md hover:bg-[#3c3b3b] transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+          style="w-[140px]"
+          text={STATUS.ALL}
+          type="button"
+        />
+        <CustomButton
           onClick={() => setFilter(STATUS.Completed)}
-        >
-          {STATUS.Completed}
-        </Button>
-        <Button
-          className="bg-[#000000] text-white px-4 py-2 rounded-md hover:bg-[#3c3b3b] transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+          style="w-[140px]"
+          text={STATUS.Completed}
+          type="button"
+        />
+        <CustomButton
           onClick={() => setFilter(STATUS.Active)}
-        >
-          {STATUS.Active}
-        </Button>
+          style="w-[140px]"
+          text={STATUS.Active}
+          type="button"
+        />
       </div>
-      <Separator className="my-4" />
       {!isLoading ? (
         <ul className="space-y-2">
           {filteredTodos.length ? (

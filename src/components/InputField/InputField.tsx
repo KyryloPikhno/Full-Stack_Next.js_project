@@ -2,13 +2,9 @@ import { FC } from "react"
 import { useFormContext } from "react-hook-form"
 
 import { Input } from "@/components/ui/input"
+import { IInputProps } from "@/interfaces"
 
-export const InputField: FC<{
-  name: string
-  type?: string
-  title?: string
-  placeholder: string
-}> = ({ name, placeholder, type = "text", title }) => {
+export const InputField: FC<IInputProps> = ({ name, placeholder, type = "text", title }) => {
   const {
     register,
     formState: { errors },

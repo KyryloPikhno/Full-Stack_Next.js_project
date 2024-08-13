@@ -3,24 +3,28 @@
 import { yupResolver } from "@hookform/resolvers/yup"
 import bcrypt from "bcryptjs"
 import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
+import { FormProvider, useForm } from "react-hook-form"
 
 import { IRegister } from "@/interfaces"
 import { registrationSchema } from "@/validation"
 
+import { CustomButton } from "../Button/Button"
+import { InputField } from "../InputField/InputField"
+
 const Register = () => {
   const router = useRouter()
 
+  const methods = useForm({
+    mode: "onSubmit",
+    resolver: yupResolver(registrationSchema),
+  })
+
   const {
-    register,
     setError,
     clearErrors,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    mode: "onSubmit",
-    resolver: yupResolver(registrationSchema),
-  })
+  } = methods
 
   const onSubmit = async (data: IRegister) => {
     try {
@@ -53,42 +57,21 @@ const Register = () => {
   }
 
   return (
-    <div>
+    <FormProvider {...methods}>
       <form
-        className="flex flex-col"
+        className="flex flex-col gap-4"
         onChange={() => clearErrors()}
         onSubmit={handleSubmit(onSubmit)}
       >
-        <input {...register("firstName")} placeholder="First name" required />
-        {errors.firstName?.message && (
-          <div className="error-message">{errors.firstName?.message}</div>
-        )}
+        <InputField name="firstName" placeholder="First name" />
+        <InputField name="lastName" placeholder="Last name" />
+        <InputField name="email" placeholder="Email" />
+        <InputField name="password" placeholder="Password" type="password" />
+        <InputField name="confirmPassword" placeholder="Confirm password" type="password" />
 
-        <input {...register("lastName")} placeholder="Last name" required />
-        {errors.lastName?.message && (
-          <div className="error-message">{errors.lastName?.message}</div>
-        )}
-
-        <input {...register("email")} placeholder="Email" required />
-        {errors.email?.message && <div className="error-message">{errors.email?.message}</div>}
-
-        <input {...register("password")} placeholder="Password" required type="password" />
-        {errors.password?.message && (
-          <div className="error-message">{errors.password?.message}</div>
-        )}
-        <input
-          {...register("confirmPassword")}
-          placeholder="Confirm password"
-          required
-          type="password"
-        />
-        {errors.confirmPassword?.message && (
-          <div className="error-message">{errors.confirmPassword?.message}</div>
-        )}
-
-        <button type="submit">Register</button>
+        <CustomButton error={errors["root"]?.message as string} text="Register" />
       </form>
-    </div>
+    </FormProvider>
   )
 }
 

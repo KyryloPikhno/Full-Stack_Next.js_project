@@ -24,3 +24,18 @@ export interface ITodoProps {
   deleteTodo: (value: string) => void
   updateTodo: (value: string, updatedTodo: { completed: boolean }) => void
 }
+
+export interface IButtonProps {
+  text: string
+  style?: string
+  error?: string
+  onClick?: () => void
+  type?: "button" | "reset" | "submit"
+}
+
+export interface IInputProps {
+  name: string
+  type?: string
+  title?: string
+  placeholder: string
+}

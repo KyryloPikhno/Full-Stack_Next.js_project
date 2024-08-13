@@ -8,6 +8,7 @@ import { FormProvider, useForm } from "react-hook-form"
 import { ILogin } from "@/interfaces"
 import { loginSchema } from "@/validation"
 
+import { CustomButton } from "../Button/Button"
 import { InputField } from "../InputField/InputField"
 
 const Login = () => {
@@ -56,10 +57,7 @@ const Login = () => {
         <InputField name="email" placeholder="Email" />
         <InputField name="password" placeholder="Password" type="password" />
 
-        <div className="relative">
-          <button type="submit">Login</button>
-          {errors.root?.message && <div className="error-message">{errors.root?.message}</div>}
-        </div>
+        <CustomButton error={errors["root"]?.message as string} text="Login" />
       </form>
     </FormProvider>
   )
