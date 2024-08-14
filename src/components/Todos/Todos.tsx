@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 
 import { ITodo } from "@/interfaces"
+import { toast } from "@/utils/toast"
 import { todoSchema } from "@/validation"
 
 import { CustomButton } from "../Button/Button"
@@ -40,23 +41,27 @@ const Todos = () => {
       if (!res.ok) throw new Error("Failed to fetch todos")
       const data = await res.json()
       setTodos(data)
-    } catch (err) {
-      console.log((err as Error).message)
+    } catch (error) {
+      toast((error as Error).message)
     }
   }
 
   const addTodo = async (body: string) => {
-    const res = await fetch("/api/todos", {
-      body: JSON.stringify({ body }),
-      headers: { "Content-Type": "application/json" },
-      method: "POST",
-    })
+    try {
+      const res = await fetch("/api/todos", {
+        body: JSON.stringify({ body }),
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+      })
 
-    if (res.ok) {
-      const newTodoItem = await res.json()
-      setTodos([...todos, newTodoItem])
-    } else {
-      console.error("Failed to add todo")
+      if (res.ok) {
+        const newTodoItem = await res.json()
+        setTodos([...todos, newTodoItem])
+      } else {
+        toast("Failed to add todo")
+      }
+    } catch (error) {
+      toast((error as Error).message)
     }
   }
 
@@ -76,7 +81,7 @@ const Todos = () => {
         prevTodos.map((todo) => (todo.id === id ? { ...todo, ...updatedData } : todo)),
       )
     } catch (error) {
-      console.error("Error updating todo:", error)
+      toast((error as Error).message)
     }
   }
 
@@ -96,7 +101,7 @@ const Todos = () => {
       const updatedTodos = await response.json()
       setTodos(updatedTodos)
     } catch (error) {
-      console.error("Error toggling todos:", error)
+      toast((error as Error).message)
     }
   }
 
@@ -108,12 +113,13 @@ const Todos = () => {
 
       if (res.ok) {
         setTodos(todos.filter((todo) => todo.id !== id))
+        toast("Todo was deleted", true)
       } else {
         const error = await res.json()
-        console.error("Failed to delete todo:", error)
+        toast((error as Error).message)
       }
     } catch (error) {
-      console.error("Error deleting todo:", error)
+      toast((error as Error).message)
     }
   }
 
@@ -126,12 +132,13 @@ const Todos = () => {
       if (res.ok) {
         const updatedTodos = await res.json()
         setTodos(updatedTodos)
+        toast("Todos were deleted", true)
       } else {
         const error = await res.json()
-        console.error("Failed to clear completed todos:", error)
+        toast((error as Error).message)
       }
     } catch (error) {
-      console.error("Error clearing completed todos:", error)
+      toast((error as Error).message)
     }
   }
 
@@ -139,7 +146,7 @@ const Todos = () => {
     try {
       await addTodo(data.newTodo)
     } catch (error) {
-      console.log("error", error)
+      toast((error as Error).message)
       setError("root", { message: "Something went wrong. Try again.", type: "manual" })
     }
   }

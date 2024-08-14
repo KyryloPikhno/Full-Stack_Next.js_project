@@ -3,6 +3,7 @@ import "./globals.css"
 import { Theme } from "@radix-ui/themes"
 import type { Metadata } from "next"
 import { Roboto_Mono } from "next/font/google"
+import { Toaster } from "react-hot-toast"
 
 import { Footer } from "@/components/Footer/Footer"
 import { Header } from "@/components/Header/Header"
@@ -29,6 +30,7 @@ export default function RootLayout({
             <Header />
             <main className={robotoMono.className}>{children}</main>
             <Footer />
+            <Toaster />
           </Theme>
         </body>
       </html>
