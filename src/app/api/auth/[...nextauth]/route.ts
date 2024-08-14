@@ -1,70 +1,7 @@
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import bcrypt from "bcryptjs"
-import NextAuth, { NextAuthOptions } from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
+import NextAuth from "next-auth"
 
-import prisma from "@/lib/prisma"
+import { authOptions } from "@/lib/authOptions"
 
-const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id
-        token.email = user.email
-        token.lastName = user.lastName
-        token.firstName = user.firstName
-      }
-      return token
-    },
-    async session({ session, token }) {
-      if (token) {
-        session.user = {
-          ...session.user,
-          firstName: token.firstName as string,
-          lastName: token.lastName as string,
-          email: token.email as string,
-          id: token.id as string,
-        }
-      }
-      return session
-    },
-  },
-  providers: [
-    CredentialsProvider({
-      async authorize(credentials) {
-        try {
-          const user = await prisma.user.findUnique({
-            where: { email: credentials?.email || "" },
-          })
+const handler = NextAuth(authOptions)
 
-          if (!user) {
-            throw new Error("No user found with the given email")
-          }
-
-          if (!credentials?.password || !bcrypt.compareSync(credentials.password, user.password)) {
-            throw new Error("Invalid password")
-          }
-
-          return user
-        } catch (error) {
-          throw new Error(error?.message)
-        }
-      },
-      credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" },
-      },
-      name: "Credentials",
-    }),
-  ],
-  secret: process.env.NEXTAUTH_SECRET,
-  session: {
-    strategy: "jwt",
-  },
-}
-
-export { authOptions }
-
-export const GET = NextAuth(authOptions)
-export const POST = NextAuth(authOptions)
+export { handler as GET, handler as POST }

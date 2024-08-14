@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 
+import { authOptions } from "@/lib/authOptions"
 import prisma from "@/lib/prisma"
 import { handleError } from "@/utils/handleError"
-
-import { authOptions } from "../../../api/auth/[...nextauth]/route"
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
