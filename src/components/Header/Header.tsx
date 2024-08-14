@@ -1,15 +1,16 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { signOut } from "next-auth/react"
 
 import { CustomButton } from "../Button/Button"
 
 export const Header = () => {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
 
   const router = useRouter()
+  const pathname = usePathname()
 
   const handleLogout = async () => {
     try {
@@ -27,6 +28,14 @@ export const Header = () => {
       {session ? (
         <>
           <p>{fullName}</p>
+          {session && pathname !== "/todos" && status === "authenticated" ? (
+            <CustomButton
+              onClick={() => router.push("/todos")}
+              style="w-auto"
+              text="Return to todos"
+            />
+          ) : null}
+
           <CustomButton onClick={handleLogout} style="w-auto" text="Logout" />
         </>
       ) : null}
