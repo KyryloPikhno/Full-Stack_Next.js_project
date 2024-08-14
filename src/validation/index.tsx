@@ -21,3 +21,7 @@ export const loginSchema = yup.object().shape({
     .min(6, "Password must be at least 6 characters")
     .required("Password is required"),
 })
+
+export const todoSchema = yup.object().shape({
+  newTodo: yup.string().required("Todo is required"),
+})

@@ -36,6 +36,7 @@ export interface IButtonProps {
 export interface IInputProps {
   name: string
   type?: string
+  style?: string
   title?: string
   placeholder: string
 }

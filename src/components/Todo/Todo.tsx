@@ -49,7 +49,7 @@ const Todo: FC<ITodoProps> = ({ todo, updateTodo, deleteTodo }) => {
           </p>
         </div>
         <div className="flex items-center">
-          <Button onClick={() => deleteTodo(todo.id)}>
+          <Button onClick={() => deleteTodo(todo.id)} type="button">
             <DeleteIcon />
           </Button>
         </div>

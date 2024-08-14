@@ -1,12 +1,16 @@
 "use client"
 
+import { yupResolver } from "@hookform/resolvers/yup"
 import { Button } from "@radix-ui/themes"
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
+import { FormProvider, useForm } from "react-hook-form"
 
 import { ITodo } from "@/interfaces"
+import { todoSchema } from "@/validation"
 
 import { CustomButton } from "../Button/Button"
+import { InputField } from "../InputField/InputField"
 import Todo from "../Todo/Todo"
 
 enum STATUS {
@@ -21,6 +25,19 @@ const Todos = () => {
   const [filteredTodos, setFilteredTodos] = useState<ITodo[] | []>([])
   const [filter, setFilter] = useState<STATUS>(STATUS.ALL)
   const [todos, setTodos] = useState<ITodo[] | []>([])
+
+  const methods = useForm({
+    mode: "onSubmit",
+    resolver: yupResolver(todoSchema),
+  })
+
+  const {
+    setError,
+    clearErrors,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = methods
 
   useEffect(() => {
     if (session) {
@@ -101,12 +118,22 @@ const Todos = () => {
     }
   }
 
+  const onSubmit = async (data: { newTodo: string }) => {
+    try {
+      await addTodo(data.newTodo)
+    } catch (error) {
+      console.log("error", error)
+      setError("root", { message: "Something went wrong. Try again.", type: "manual" })
+    }
+  }
+
   const isLoading = status === "loading"
 
   return (
     <div className="p-4 min-h-[80vh] mb-20">
       <h1 className="text-[30px] font-bold mb-4 text-center">Your Todos</h1>
-      <div className="flex justify-between mb-4 w-[500px]">
+
+      <div className="flex justify-between mb-2 w-[500px]">
         <CustomButton
           onClick={() => setFilter(STATUS.ALL)}
           style="w-[140px]"
@@ -126,19 +153,32 @@ const Todos = () => {
           type="button"
         />
       </div>
-      {!isLoading ? (
-        <ul className="space-y-2">
-          {filteredTodos.length ? (
-            filteredTodos.map((todo) => (
-              <Todo deleteTodo={deleteTodo} key={todo.id} todo={todo} updateTodo={updateTodo} />
-            ))
+
+      <FormProvider {...methods}>
+        <form
+          className="flex flex-col gap-4"
+          onChange={() => clearErrors()}
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className="my-2">
+            <InputField name="newTodo" placeholder="" style="w-full" title="Create todo" />
+          </div>
+
+          {!isLoading ? (
+            <div className="space-y-2">
+              {filteredTodos.length ? (
+                filteredTodos.map((todo) => (
+                  <Todo deleteTodo={deleteTodo} key={todo.id} todo={todo} updateTodo={updateTodo} />
+                ))
+              ) : (
+                <p>No todos</p>
+              )}
+            </div>
           ) : (
-            <p>No todos</p>
+            <p>Loading...</p>
           )}
-        </ul>
-      ) : (
-        <p>Loading...</p>
-      )}
+        </form>
+      </FormProvider>
       <Button className="mt-4" onClick={() => addTodo("New Todo")}>
         Add Todo
       </Button>
