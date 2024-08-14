@@ -7,6 +7,7 @@ import { signIn } from "next-auth/react"
 import { FormProvider, useForm } from "react-hook-form"
 
 import { ILogin } from "@/interfaces"
+import { toast } from "@/utils/toast"
 import { loginSchema } from "@/validation"
 
 import { CustomButton } from "../Button/Button"
@@ -43,7 +44,6 @@ const Login = () => {
         router.push("/todos")
       }
     } catch (error) {
-      console.log("error", error)
       setError("root", { message: "Something went wrong. Try again.", type: "manual" })
     }
   }

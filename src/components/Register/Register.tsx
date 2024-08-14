@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { FormProvider, useForm } from "react-hook-form"
 
 import { IRegister } from "@/interfaces"
+import { toast } from "@/utils/toast"
 import { registrationSchema } from "@/validation"
 
 import { CustomButton } from "../Button/Button"
@@ -50,6 +51,7 @@ const Register = () => {
       }
 
       if (res?.ok) {
+        toast("Registration successful!", true)
         router.push("/auth/login")
       }
     } catch (error) {
