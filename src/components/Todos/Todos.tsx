@@ -156,7 +156,7 @@ const Todos = () => {
   const leftCount = todos.filter((todo) => !todo.completed).length
 
   return (
-    <div className="p-4 min-h-[80vh] mb-20">
+    <div className="p-4 min-h-[74vh] mb-20">
       <h1 className="text-[30px] font-bold mb-4 text-center">Your Todos</h1>
 
       <div className="flex justify-between mb-2 sm:w-[500px]">
