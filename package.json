@@ -3,13 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
     "build": "next build && prisma generate",
+    "dev": "next dev",
     "start": "next start",
-    "lint": "next lint",
-    "prisma:format": "prisma format",
-    "prisma:init": "npx prisma migrate dev --name init",
-    "prisma:reset": "prisma migrate reset",
     "prisma:generate": "prisma generate"
   },
   "dependencies": {
