@@ -22,7 +22,13 @@ export interface ITodo {
 export interface ITodoProps {
   todo: ITodo
   deleteTodo: (value: string) => void
-  updateTodo: (value: string, updatedTodo: { completed: boolean }) => void
+  updateTodo: (
+    value: string,
+    updatedTodo: {
+      body?: string
+      completed?: boolean
+    },
+  ) => void
 }
 
 export interface IButtonProps {
