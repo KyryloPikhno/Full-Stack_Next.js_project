@@ -30,20 +30,35 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions)
 
     if (!session || !session.user) {
-      return handleError("Unauthorized", 401)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    const url = new URL(request.url)
+    const filter = url.searchParams.get("filter") || "All"
+
+    const whereClause: any = { userId: session.user.id }
+
+    if (filter === "Completed") {
+      whereClause.completed = true
+    } else if (filter === "Active") {
+      whereClause.completed = false
     }
 
     const todos = await prisma.todo.findMany({
-      where: { userId: session.user.id },
+      orderBy: {
+        createdAt: "asc",
+      },
+      where: whereClause,
     })
 
     return NextResponse.json(todos)
   } catch (error) {
+    console.log("error", error)
     return handleError("Internal Server Error", 500)
   }
 }
