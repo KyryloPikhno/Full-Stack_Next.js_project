@@ -27,7 +27,7 @@ export const Header = () => {
       {session ? (
         <>
           <p>{fullName}</p>
-          <CustomButton onClick={handleLogout} text="Logout" />
+          <CustomButton onClick={handleLogout} style="w-auto" text="Logout" />
         </>
       ) : null}
     </div>
