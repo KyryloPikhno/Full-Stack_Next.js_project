@@ -1,4 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-  
+
+@keyframes textPulse {
+  0% {
+    color: #000000;
+  }
+  50% {
+    color: #32868a;
+  }
+  100% {
+    color: #000000;
+  }
+}
+
+.animate-pulse {
+  animation: textPulse 3s infinite;
+}
