@@ -1,7 +1,6 @@
 "use client"
 
 import { yupResolver } from "@hookform/resolvers/yup"
-import { Button } from "@radix-ui/themes"
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
@@ -13,8 +12,8 @@ import { CustomButton } from "../Button/Button"
 import { InputField } from "../InputField/InputField"
 import Todo from "../Todo/Todo"
 
-enum STATUS {
-  ALL = "All",
+enum FILTER {
+  All = "All",
   Active = "Active",
   Completed = "Completed",
 }
@@ -23,7 +22,7 @@ const Todos = () => {
   const { data: session, status } = useSession()
 
   const [filteredTodos, setFilteredTodos] = useState<ITodo[] | []>([])
-  const [filter, setFilter] = useState<STATUS>(STATUS.ALL)
+  const [filter, setFilter] = useState<FILTER>(FILTER.All)
   const [todos, setTodos] = useState<ITodo[] | []>([])
 
   const methods = useForm({
@@ -35,7 +34,6 @@ const Todos = () => {
     setError,
     clearErrors,
     handleSubmit,
-    watch,
     formState: { errors },
   } = methods
 
@@ -46,9 +44,9 @@ const Todos = () => {
   }, [session])
 
   useEffect(() => {
-    if (filter === STATUS.Completed) {
+    if (filter === FILTER.Completed) {
       setFilteredTodos(todos.filter((todo) => todo.completed))
-    } else if (filter === STATUS.Active) {
+    } else if (filter === FILTER.Active) {
       setFilteredTodos(todos.filter((todo) => !todo.completed))
     } else {
       setFilteredTodos(todos)
@@ -135,21 +133,21 @@ const Todos = () => {
 
       <div className="flex justify-between mb-2 w-[500px]">
         <CustomButton
-          onClick={() => setFilter(STATUS.ALL)}
-          style="w-[140px]"
-          text={STATUS.ALL}
+          onClick={() => setFilter(FILTER.All)}
+          style={`w-[140px] ${filter === FILTER.All ? "" : "bg-[#FFFFFF] hover:bg-[#FFFFFF] text-[#000000]"}`}
+          text={FILTER.All}
           type="button"
         />
         <CustomButton
-          onClick={() => setFilter(STATUS.Completed)}
-          style="w-[140px]"
-          text={STATUS.Completed}
+          onClick={() => setFilter(FILTER.Completed)}
+          style={`w-[140px] ${filter === FILTER.Completed ? "" : "bg-[#FFFFFF] hover:bg-[#FFFFFF] text-[#000000]"}`}
+          text={FILTER.Completed}
           type="button"
         />
         <CustomButton
-          onClick={() => setFilter(STATUS.Active)}
-          style="w-[140px]"
-          text={STATUS.Active}
+          onClick={() => setFilter(FILTER.Active)}
+          style={`w-[140px] ${filter === FILTER.Active ? "" : "bg-[#FFFFFF] hover:bg-[#FFFFFF] text-[#000000]"}`}
+          text={FILTER.Active}
           type="button"
         />
       </div>
@@ -166,22 +164,22 @@ const Todos = () => {
 
           {!isLoading ? (
             <div className="space-y-2">
-              {filteredTodos.length ? (
-                filteredTodos.map((todo) => (
-                  <Todo deleteTodo={deleteTodo} key={todo.id} todo={todo} updateTodo={updateTodo} />
-                ))
-              ) : (
-                <p>No todos</p>
-              )}
+              {filteredTodos.length
+                ? filteredTodos.map((todo) => (
+                    <Todo
+                      deleteTodo={deleteTodo}
+                      key={todo.id}
+                      todo={todo}
+                      updateTodo={updateTodo}
+                    />
+                  ))
+                : null}
             </div>
           ) : (
             <p>Loading...</p>
           )}
         </form>
       </FormProvider>
-      <Button className="mt-4" onClick={() => addTodo("New Todo")}>
-        Add Todo
-      </Button>
     </div>
   )
 }
