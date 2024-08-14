@@ -47,3 +47,34 @@ export async function GET() {
     return handleError("Internal Server Error", 500)
   }
 }
+
+export async function PATCH() {
+  try {
+    const session = await getServerSession(authOptions)
+
+    if (!session) {
+      return handleError("Unauthorized", 401)
+    }
+
+    const result = await prisma.$transaction(async (prisma) => {
+      const todos = await prisma.todo.findMany({
+        where: { userId: session.user?.id },
+      })
+
+      const allCompleted = todos.every((todo) => todo.completed)
+
+      await prisma.todo.updateMany({
+        data: { completed: !allCompleted },
+        where: { userId: session.user?.id },
+      })
+
+      return prisma.todo.findMany({
+        where: { userId: session.user?.id },
+      })
+    })
+
+    return NextResponse.json(result, { status: 200 })
+  } catch (error) {
+    return handleError("Internal Server Error", 500)
+  }
+}

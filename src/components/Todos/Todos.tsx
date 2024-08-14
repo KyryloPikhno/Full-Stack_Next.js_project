@@ -99,6 +99,26 @@ const Todos = () => {
     }
   }
 
+  const toggleAllTodos = async () => {
+    try {
+      const response = await fetch("/api/todos", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "PATCH",
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to toggle todos")
+      }
+
+      const updatedTodos = await response.json()
+      setTodos(updatedTodos)
+    } catch (error) {
+      console.error("Error toggling todos:", error)
+    }
+  }
+
   const deleteTodo = async (id: string) => {
     try {
       const res = await fetch(`/api/todos/${id}`, {
@@ -126,6 +146,7 @@ const Todos = () => {
   }
 
   const isLoading = status === "loading"
+  const isAllCompleted = todos.every((todo) => todo.completed)
 
   return (
     <div className="p-4 min-h-[80vh] mb-20">
@@ -161,6 +182,13 @@ const Todos = () => {
           <div className="my-2">
             <InputField name="newTodo" placeholder="" style="w-full" title="Create todo" />
           </div>
+
+          <CustomButton
+            onClick={toggleAllTodos}
+            style="w-[140px]"
+            text={isAllCompleted ? "Uncomplete All" : "Complete All"}
+            type="button"
+          />
 
           {!isLoading ? (
             <div className="space-y-2">
