@@ -93,3 +93,30 @@ export async function PATCH() {
     return handleError("Internal Server Error", 500)
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const session = await getServerSession(authOptions)
+
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    const url = new URL(request.url)
+    const completed = url.searchParams.get("completed")
+
+    if (completed === "true") {
+      await prisma.todo.deleteMany({
+        where: { completed: true, userId: session.user.id },
+      })
+    }
+
+    const updatedTodos = await prisma.todo.findMany({
+      where: { userId: session.user.id },
+    })
+
+    return NextResponse.json(updatedTodos)
+  } catch (error) {
+    return handleError("Internal Server Error", 500)
+  }
+}
