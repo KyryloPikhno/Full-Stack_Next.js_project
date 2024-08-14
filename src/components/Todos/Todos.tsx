@@ -117,6 +117,24 @@ const Todos = () => {
     }
   }
 
+  const clearCompletedTodos = async () => {
+    try {
+      const res = await fetch("/api/todos?completed=true", {
+        method: "DELETE",
+      })
+
+      if (res.ok) {
+        const updatedTodos = await res.json()
+        setTodos(updatedTodos)
+      } else {
+        const error = await res.json()
+        console.error("Failed to clear completed todos:", error)
+      }
+    } catch (error) {
+      console.error("Error clearing completed todos:", error)
+    }
+  }
+
   const onSubmit = async (data: { newTodo: string }) => {
     try {
       await addTodo(data.newTodo)
@@ -133,22 +151,22 @@ const Todos = () => {
     <div className="p-4 min-h-[80vh] mb-20">
       <h1 className="text-[30px] font-bold mb-4 text-center">Your Todos</h1>
 
-      <div className="flex justify-between mb-2 w-[500px]">
+      <div className="flex justify-between mb-2 sm:w-[500px]">
         <CustomButton
           onClick={() => setFilter(FILTER.All)}
-          style={`w-[140px] ${filter === FILTER.All ? "" : "bg-[#FFFFFF] hover:bg-[#FFFFFF] text-[#000000]"}`}
+          style={` ${filter === FILTER.All ? "" : "bg-[#FFFFFF] hover:bg-[#FFFFFF] text-[#000000]"}`}
           text={FILTER.All}
           type="button"
         />
         <CustomButton
           onClick={() => setFilter(FILTER.Completed)}
-          style={`w-[140px] ${filter === FILTER.Completed ? "" : "bg-[#FFFFFF] hover:bg-[#FFFFFF] text-[#000000]"}`}
+          style={` ${filter === FILTER.Completed ? "" : "bg-[#FFFFFF] hover:bg-[#FFFFFF] text-[#000000]"}`}
           text={FILTER.Completed}
           type="button"
         />
         <CustomButton
           onClick={() => setFilter(FILTER.Active)}
-          style={`w-[140px] ${filter === FILTER.Active ? "" : "bg-[#FFFFFF] hover:bg-[#FFFFFF] text-[#000000]"}`}
+          style={` ${filter === FILTER.Active ? "" : "bg-[#FFFFFF] hover:bg-[#FFFFFF] text-[#000000]"}`}
           text={FILTER.Active}
           type="button"
         />
@@ -161,19 +179,25 @@ const Todos = () => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="my-2">
-            <InputField name="newTodo" placeholder="" style="w-full h-[60px]" title="Create todo" />
+            <InputField
+              name="newTodo"
+              placeholder="Create something..."
+              style="sm:w-[500px] w-[320px] h-[60px]"
+              title="Create todo"
+            />
           </div>
 
-          <div className="flex gap-[40px]">
+          <div className="flex justify-between mb-2 sm:w-[500px]">
             <CustomButton
               onClick={toggleAllTodos}
-              style="w-[140px]"
               text={isAllCompleted ? "Uncomplete All" : "Complete All"}
               type="button"
             />
-            <div className="w-[140px] rounded-[8px] text-[14px] flex justify-center items-center border-[#000000] border-[2px] ">
+            <div className="sm:w-[140px] w-[100px] text-[10px] rounded-[8px] text-[14px] flex justify-center items-center border-[#000000] border-[2px] ">
               Left: {todos.filter((todo) => !todo.completed).length}
             </div>
+
+            <CustomButton onClick={clearCompletedTodos} text="Clear completed" type="button" />
           </div>
 
           {!isLoading ? (

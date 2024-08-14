@@ -2,6 +2,7 @@
 
 import { yupResolver } from "@hookform/resolvers/yup"
 import bcrypt from "bcryptjs"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { FormProvider, useForm } from "react-hook-form"
 
@@ -58,6 +59,8 @@ const Register = () => {
 
   return (
     <FormProvider {...methods}>
+      <h1 className="text-[30px] font-bold mb-4 text-center">Register</h1>
+
       <form
         className="flex flex-col gap-4"
         onChange={() => clearErrors()}
@@ -69,7 +72,15 @@ const Register = () => {
         <InputField name="password" placeholder="Password" type="password" />
         <InputField name="confirmPassword" placeholder="Confirm password" type="password" />
 
-        <CustomButton error={errors["root"]?.message as string} text="Register" />
+        <CustomButton
+          error={errors["root"]?.message as string}
+          style="sm:w-[420px]"
+          text="Register"
+        />
+
+        <Link className="text-center text-[12px]" href="/auth/login">
+          Already have <span className="underline">an account</span>?
+        </Link>
       </form>
     </FormProvider>
   )

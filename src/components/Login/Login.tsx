@@ -1,6 +1,7 @@
 "use client"
 
 import { yupResolver } from "@hookform/resolvers/yup"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { signIn } from "next-auth/react"
 import { FormProvider, useForm } from "react-hook-form"
@@ -49,6 +50,8 @@ const Login = () => {
 
   return (
     <FormProvider {...methods}>
+      <h1 className="text-[30px] font-bold mb-4 text-center">Login</h1>
+
       <form
         className="flex flex-col gap-4"
         onChange={() => clearErrors()}
@@ -57,7 +60,11 @@ const Login = () => {
         <InputField name="email" placeholder="Email" />
         <InputField name="password" placeholder="Password" type="password" />
 
-        <CustomButton error={errors["root"]?.message as string} text="Login" />
+        <CustomButton error={errors["root"]?.message as string} style="sm:w-[420px]" text="Login" />
+
+        <Link className="text-center text-[12px]" href="/auth/register">
+          Or <span className="underline">register</span> if you are new
+        </Link>
       </form>
     </FormProvider>
   )

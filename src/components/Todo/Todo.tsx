@@ -25,7 +25,6 @@ const Todo: FC<ITodoProps> = ({ todo, updateTodo, deleteTodo }) => {
   }, [isEditing])
 
   const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
-    console.log("Textarea lost focus", e.target.value)
     updateTodo(todo.id, { body: e.target.value })
     setIsEditing(false)
   }
@@ -37,11 +36,12 @@ const Todo: FC<ITodoProps> = ({ todo, updateTodo, deleteTodo }) => {
           className="text-[18px]"
           onBlur={handleBlur}
           onChange={(e) => setValue(e.target.value)}
+          placeholder="Enter changes"
           ref={textareaRef}
           value={value}
         />
       ) : (
-        <div className="px-2 border w-[500px] rounded shadow" key={todo.id}>
+        <div className="px-2 border sm:w-[500px] rounded shadow" key={todo.id}>
           <div className="flex gap-4 justify-between items-center">
             <div className="flex items-center gap-2">
               <div>
@@ -52,7 +52,7 @@ const Todo: FC<ITodoProps> = ({ todo, updateTodo, deleteTodo }) => {
                 />
               </div>
               <div className="py-2 cursor-pointer" onDoubleClick={() => setIsEditing(true)}>
-                <p className="text-lg w-[400px] leading-[23px] break-words">{todo.body}</p>
+                <p className="text-lg sm:w-[400px] leading-[23px] break-words">{todo.body}</p>
                 <div className="flex gap-4 mt-1">
                   <p className="text-[10px] text-gray-500">
                     Created: {moment(todo?.createdAt).format(DATE_FORMAT_DAY_TIME)}

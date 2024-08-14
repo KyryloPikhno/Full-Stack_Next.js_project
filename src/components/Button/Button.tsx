@@ -12,7 +12,11 @@ export const CustomButton: FC<IButtonProps> = ({
 }) => {
   return (
     <div className="relative">
-      <Button className={`w-[420px] ${style}`} onClick={onClick} type={type}>
+      <Button
+        className={`sm:w-[140px] w-[100px] sm:text-[14px] border-[2px] border-[#000000] text-[10px] ${style}`}
+        onClick={onClick}
+        type={type}
+      >
         {text}
       </Button>
 
