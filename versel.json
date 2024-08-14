@@ -2,21 +2,12 @@
   "builds": [
     {
       "src": "package.json",
-      "use": "@vercel/node"
-    }
-  ],
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["prisma/**"]
-      }
+      "use": "@vercel/next"
     }
   ],
   "build": {
     "env": {
-      "DATABASE_URL": "@database_url"
+      "DATABASE_URL": "@DATABASE_URL"
     },
     "cmd": "yarn build && yarn prisma:generate"
   }
