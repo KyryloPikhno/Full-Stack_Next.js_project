@@ -7,7 +7,6 @@ import { signIn } from "next-auth/react"
 import { FormProvider, useForm } from "react-hook-form"
 
 import { ILogin } from "@/interfaces"
-import { toast } from "@/utils/toast"
 import { loginSchema } from "@/validation"
 
 import { CustomButton } from "../Button/Button"
