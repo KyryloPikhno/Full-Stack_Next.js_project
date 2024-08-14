@@ -1,5 +1,3 @@
-"use client"
-
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
@@ -20,8 +18,6 @@ enum FILTER {
 
 const Todos = () => {
   const { data: session, status } = useSession()
-
-  const [filteredTodos, setFilteredTodos] = useState<ITodo[] | []>([])
   const [filter, setFilter] = useState<FILTER>(FILTER.All)
   const [todos, setTodos] = useState<ITodo[] | []>([])
 
@@ -30,32 +26,17 @@ const Todos = () => {
     resolver: yupResolver(todoSchema),
   })
 
-  const {
-    setError,
-    clearErrors,
-    handleSubmit,
-    formState: { errors },
-  } = methods
+  const { handleSubmit, clearErrors, setError } = methods
 
   useEffect(() => {
     if (session) {
-      fetchTodos()
+      fetchTodos(filter)
     }
-  }, [session])
+  }, [session, filter])
 
-  useEffect(() => {
-    if (filter === FILTER.Completed) {
-      setFilteredTodos(todos.filter((todo) => todo.completed))
-    } else if (filter === FILTER.Active) {
-      setFilteredTodos(todos.filter((todo) => !todo.completed))
-    } else {
-      setFilteredTodos(todos)
-    }
-  }, [filter, todos])
-
-  const fetchTodos = async () => {
+  const fetchTodos = async (filter: FILTER) => {
     try {
-      const res = await fetch("/api/todos")
+      const res = await fetch(`/api/todos?filter=${filter}`)
       if (!res.ok) throw new Error("Failed to fetch todos")
       const data = await res.json()
       setTodos(data)
@@ -180,20 +161,25 @@ const Todos = () => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="my-2">
-            <InputField name="newTodo" placeholder="" style="w-full" title="Create todo" />
+            <InputField name="newTodo" placeholder="" style="w-full h-[60px]" title="Create todo" />
           </div>
 
-          <CustomButton
-            onClick={toggleAllTodos}
-            style="w-[140px]"
-            text={isAllCompleted ? "Uncomplete All" : "Complete All"}
-            type="button"
-          />
+          <div className="flex gap-[40px]">
+            <CustomButton
+              onClick={toggleAllTodos}
+              style="w-[140px]"
+              text={isAllCompleted ? "Uncomplete All" : "Complete All"}
+              type="button"
+            />
+            <div className="w-[140px] rounded-[8px] text-[14px] flex justify-center items-center border-[#000000] border-[2px] ">
+              Left: {todos.filter((todo) => !todo.completed).length}
+            </div>
+          </div>
 
           {!isLoading ? (
             <div className="space-y-2">
-              {filteredTodos.length
-                ? filteredTodos.map((todo) => (
+              {todos.length
+                ? todos.map((todo) => (
                     <Todo
                       deleteTodo={deleteTodo}
                       key={todo.id}
