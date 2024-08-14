@@ -3,6 +3,7 @@ import "./globals.css"
 import { Theme } from "@radix-ui/themes"
 import type { Metadata } from "next"
 import { Roboto_Mono } from "next/font/google"
+import Head from "next/head"
 import { Toaster } from "react-hot-toast"
 
 import { Footer } from "@/components/Footer/Footer"
@@ -25,6 +26,9 @@ export default function RootLayout({
   return (
     <SessionWrapper>
       <html lang="en">
+        <Head>
+          <link href="/favicon.ico" rel="icon" />
+        </Head>
         <body>
           <Theme className="flex flex-col items-center justify-between min-h-screen bg-[#fdf6f6]">
             <Header />
