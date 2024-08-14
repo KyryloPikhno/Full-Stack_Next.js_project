@@ -146,6 +146,7 @@ const Todos = () => {
 
   const isLoading = status === "loading"
   const isAllCompleted = todos.every((todo) => todo.completed)
+  const leftCount = todos.filter((todo) => !todo.completed).length
 
   return (
     <div className="p-4 min-h-[80vh] mb-20">
@@ -194,7 +195,7 @@ const Todos = () => {
               type="button"
             />
             <div className="sm:w-[140px] w-[100px] text-[10px] rounded-[8px] text-[14px] flex justify-center items-center border-[#000000] border-[2px] ">
-              Left: {todos.filter((todo) => !todo.completed).length}
+              {`Left: ${leftCount} ${leftCount > 1 ? "items" : "item"}`}
             </div>
 
             <CustomButton onClick={clearCompletedTodos} text="Clear completed" type="button" />
