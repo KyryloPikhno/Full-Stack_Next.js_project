@@ -1,11 +1,24 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
+import { signOut } from "next-auth/react"
 
-import LogoutButton from "../LogoutButton/LogoutButton"
+import { CustomButton } from "../Button/Button"
 
 export const Header = () => {
   const { data: session } = useSession()
+
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    try {
+      await signOut({ redirect: false })
+      router.push("/auth/login")
+    } catch (error) {
+      console.error("Logout error:", error)
+    }
+  }
 
   const fullName = `${session?.user?.firstName ?? ""} ${session?.user?.lastName ?? ""}`
 
@@ -14,7 +27,7 @@ export const Header = () => {
       {session ? (
         <>
           <p>{fullName}</p>
-          <LogoutButton />
+          <CustomButton onClick={handleLogout} text="Logout" />
         </>
       ) : null}
     </div>
