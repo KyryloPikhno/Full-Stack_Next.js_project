@@ -4,6 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { signIn } from "next-auth/react"
+import { useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 
 import { ILogin } from "@/interfaces"
@@ -13,6 +14,8 @@ import { CustomButton } from "../Button/Button"
 import { InputField } from "../InputField/InputField"
 
 const Login = () => {
+  const [loading, setLoading] = useState(false)
+
   const router = useRouter()
 
   const methods = useForm({
@@ -28,6 +31,7 @@ const Login = () => {
   } = methods
 
   const onSubmit = async (data: ILogin) => {
+    setLoading(true)
     try {
       const res = await signIn("credentials", {
         email: data.email,
@@ -44,6 +48,8 @@ const Login = () => {
       }
     } catch (error) {
       setError("root", { message: "Something went wrong. Try again.", type: "manual" })
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -59,7 +65,13 @@ const Login = () => {
         <InputField name="email" placeholder="Email" />
         <InputField name="password" placeholder="Password" type="password" />
 
-        <CustomButton error={errors["root"]?.message as string} style="sm:w-[420px]" text="Login" />
+        <CustomButton
+          disabled={loading || !!Object.keys(errors).length}
+          error={errors["root"]?.message as string}
+          loading={loading}
+          style="sm:w-[420px]"
+          text="Login"
+        />
 
         <Link className="text-center text-[12px]" href="/auth/register">
           Or <span className="underline">register</span> if you are new
