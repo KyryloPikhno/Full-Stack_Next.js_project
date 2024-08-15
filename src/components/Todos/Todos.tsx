@@ -3,7 +3,8 @@ import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 
-import { ITodo } from "@/interfaces"
+import { Skeleton } from "@/components/ui/skeleton"
+import { ITodo, IUpdatedTodo } from "@/interfaces"
 import { toast } from "@/utils/toast"
 import { todoSchema } from "@/validation"
 
@@ -19,8 +20,9 @@ enum FILTER {
 
 const Todos = () => {
   const { data: session, status } = useSession()
-  const [filter, setFilter] = useState<FILTER>(FILTER.All)
   const [todos, setTodos] = useState<ITodo[] | []>([])
+  const [filter, setFilter] = useState<FILTER>(FILTER.All)
+  const [totalTodos, setTotalTodos] = useState<number>(0)
 
   const methods = useForm({
     mode: "onSubmit",
@@ -40,7 +42,9 @@ const Todos = () => {
       const res = await fetch(`/api/todos?filter=${filter}`)
       if (!res.ok) throw new Error("Failed to fetch todos")
       const data = await res.json()
-      setTodos(data)
+
+      setTodos(data.todos)
+      setTotalTodos(data.totalTodos)
     } catch (error) {
       toast((error as Error).message)
     }
@@ -57,6 +61,7 @@ const Todos = () => {
       if (res.ok) {
         const newTodoItem = await res.json()
         setTodos([...todos, newTodoItem])
+        setTotalTodos(totalTodos + 1)
 
         reset()
       } else {
@@ -67,7 +72,7 @@ const Todos = () => {
     }
   }
 
-  const updateTodo = async (id: string, updatedData: any) => {
+  const updateTodo = async (id: string, updatedData: IUpdatedTodo) => {
     try {
       const res = await fetch(`/api/todos/${id}`, {
         body: JSON.stringify(updatedData),
@@ -77,6 +82,14 @@ const Todos = () => {
 
       if (!res.ok) {
         throw new Error("Failed to update todo")
+      }
+
+      if (updatedData.completed && !updatedData.body) {
+        toast("Todo completed!", true)
+      }
+
+      if (updatedData.body) {
+        toast("Todo updated!", true)
       }
 
       setTodos((prevTodos) =>
@@ -101,6 +114,7 @@ const Todos = () => {
       }
 
       const updatedTodos = await response.json()
+      setTotalTodos(updatedTodos.length)
       setTodos(updatedTodos)
     } catch (error) {
       toast((error as Error).message)
@@ -115,6 +129,8 @@ const Todos = () => {
 
       if (res.ok) {
         setTodos(todos.filter((todo) => todo.id !== id))
+        setTotalTodos(totalTodos - 1)
+
         toast("Todo was deleted", true)
       } else {
         const error = await res.json()
@@ -133,7 +149,9 @@ const Todos = () => {
 
       if (res.ok) {
         const updatedTodos = await res.json()
+        setTotalTodos(updatedTodos.length)
         setTodos(updatedTodos)
+
         toast("Todos were deleted", true)
       } else {
         const error = await res.json()
@@ -154,79 +172,102 @@ const Todos = () => {
   }
 
   const isLoading = status === "loading"
-  const isAllCompleted = todos.every((todo) => todo.completed)
-  const leftCount = todos.filter((todo) => !todo.completed).length
+  const isAllCompleted = todos.every((todo) => todo.completed) ?? []
+  const isAnyTodoCompleted = todos.some((todo) => todo.completed) ?? []
+  const leftCount = todos.filter((todo) => !todo.completed).length ?? 0
 
   return (
     <div className="p-4 min-h-[74vh] mb-20">
       <h1 className="text-[30px] font-bold mb-4 text-center">Your Todos</h1>
 
-      <div className="flex justify-between mb-2 sm:w-[500px]">
+      <div
+        className={`flex justify-between mb-2 sm:w-[500px] transition-opacity duration-300 ${
+          totalTodos ? "opacity-100" : "opacity-0"
+        }`}
+      >
         <CustomButton
-          onClick={() => setFilter(FILTER.All)}
-          style={` ${filter === FILTER.All ? "" : "bg-[#FFFFFF] hover:bg-[#FFFFFF] text-[#000000]"}`}
-          text={FILTER.All}
+          onClick={toggleAllTodos}
+          text={isAllCompleted ? "Uncomplete All" : "Complete All"}
           type="button"
         />
-        <CustomButton
-          onClick={() => setFilter(FILTER.Completed)}
-          style={` ${filter === FILTER.Completed ? "" : "bg-[#FFFFFF] hover:bg-[#FFFFFF] text-[#000000]"}`}
-          text={FILTER.Completed}
-          type="button"
-        />
-        <CustomButton
-          onClick={() => setFilter(FILTER.Active)}
-          style={` ${filter === FILTER.Active ? "" : "bg-[#FFFFFF] hover:bg-[#FFFFFF] text-[#000000]"}`}
-          text={FILTER.Active}
-          type="button"
-        />
-      </div>
-
-      <FormProvider {...methods}>
-        <form
-          className="flex flex-col gap-4"
-          onChange={() => clearErrors()}
-          onSubmit={handleSubmit(onSubmit)}
+        <div
+          className={`transition-opacity duration-300 ${isAnyTodoCompleted ? "opacity-100" : "opacity-0"}`}
         >
-          <div className="my-2">
+          <CustomButton onClick={clearCompletedTodos} text="Clear completed" type="button" />
+        </div>
+        <div className="sm:w-[140px] w-[100px] text-[10px] rounded-[8px] sm:text-[14px] flex pl-3 items-center">
+          {`Left: ${leftCount} item${leftCount > 1 ? "s" : ""}`}
+        </div>
+      </div>
+      <div className={`transition-all duration-500 ${totalTodos ? "mt-4" : "mt-[-50px]"}`}>
+        <FormProvider {...methods}>
+          <form
+            className="flex flex-col gap-4"
+            onChange={() => clearErrors()}
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <InputField
               name="newTodo"
               placeholder="Create something..."
               style="sm:w-[500px] w-[320px] h-[60px]"
             />
-          </div>
 
-          <div className="flex justify-between mb-2 sm:w-[500px]">
-            <CustomButton
-              onClick={toggleAllTodos}
-              text={isAllCompleted ? "Uncomplete All" : "Complete All"}
-              type="button"
-            />
-            <div className="sm:w-[140px] w-[100px] text-[10px] rounded-[8px] text-[14px] flex justify-center items-center border-[#000000] border-[2px] ">
-              {`Left: ${leftCount} ${leftCount > 1 ? "items" : "item"}`}
+            <div
+              className={`flex justify-between mb-2 sm:w-[500px] transition-opacity duration-520 ${
+                totalTodos ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <CustomButton
+                onClick={() => setFilter(FILTER.All)}
+                style={
+                  filter === FILTER.All ? "" : "bg-[#FFFFFF] hover:bg-[#FFFFFF] text-[#000000]"
+                }
+                text={FILTER.All}
+                type="button"
+              />
+              <CustomButton
+                onClick={() => setFilter(FILTER.Completed)}
+                style={
+                  filter === FILTER.Completed
+                    ? ""
+                    : "bg-[#FFFFFF] hover:bg-[#FFFFFF] text-[#000000]"
+                }
+                text={FILTER.Completed}
+                type="button"
+              />
+              <CustomButton
+                onClick={() => setFilter(FILTER.Active)}
+                style={
+                  filter === FILTER.Active ? "" : "bg-[#FFFFFF] hover:bg-[#FFFFFF] text-[#000000]"
+                }
+                text={FILTER.Active}
+                type="button"
+              />
             </div>
 
-            <CustomButton onClick={clearCompletedTodos} text="Clear completed" type="button" />
-          </div>
-
-          {!isLoading ? (
-            <div className="space-y-2">
-              {todos.length
-                ? todos.map((todo) => (
-                    <Todo
-                      deleteTodo={deleteTodo}
-                      key={todo.id}
-                      todo={todo}
-                      updateTodo={updateTodo}
-                    />
-                  ))
-                : null}
-            </div>
-          ) : (
-            <p>Loading...</p>
-          )}
-        </form>
-      </FormProvider>
+            {!isLoading ? (
+              <div className="space-y-2">
+                {todos.length
+                  ? todos.map((todo) => (
+                      <Todo
+                        deleteTodo={deleteTodo}
+                        key={todo.id}
+                        todo={todo}
+                        updateTodo={updateTodo}
+                      />
+                    ))
+                  : null}
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {[0, 1, 2].map((i) => (
+                  <Skeleton className="h-[58px] sm:w-[500px] rounded" key={i} />
+                ))}
+              </div>
+            )}
+          </form>
+        </FormProvider>
+      </div>
     </div>
   )
 }

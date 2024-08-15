@@ -40,7 +40,7 @@ export async function GET(request: Request) {
     const url = new URL(request.url)
     const filter = url.searchParams.get("filter") || "All"
 
-    const whereClause: any = { userId: session.user.id }
+    const whereClause: { completed?: boolean; userId: string } = { userId: session.user.id }
 
     if (filter === "Completed") {
       whereClause.completed = true
@@ -48,16 +48,23 @@ export async function GET(request: Request) {
       whereClause.completed = false
     }
 
-    const todos = await prisma.todo.findMany({
-      orderBy: {
-        createdAt: "asc",
-      },
-      where: whereClause,
-    })
+    const [todos, totalTodos] = await Promise.all([
+      prisma.todo.findMany({
+        orderBy: {
+          createdAt: "asc",
+        },
+        where: whereClause,
+      }),
+      prisma.todo.count({
+        where: { userId: session.user.id },
+      }),
+    ])
 
-    return NextResponse.json(todos)
+    return NextResponse.json({
+      todos,
+      totalTodos,
+    })
   } catch (error) {
-    console.log("error", error)
     return handleError("Internal Server Error", 500)
   }
 }
