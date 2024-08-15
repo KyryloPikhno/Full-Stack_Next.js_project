@@ -41,7 +41,7 @@ const Todo: FC<ITodoProps> = ({ todo, updateTodo, deleteTodo }) => {
           value={value}
         />
       ) : (
-        <div className="px-2 border sm:w-[500px] rounded shadow" key={todo.id}>
+        <div className="px-2 border sm:w-[500px] rounded shadow group" key={todo.id}>
           <div className="flex gap-4 justify-between items-center">
             <div className="flex items-center gap-2">
               <div>
@@ -63,7 +63,7 @@ const Todo: FC<ITodoProps> = ({ todo, updateTodo, deleteTodo }) => {
                 </div>
               </div>
             </div>
-            <div className="flex items-center mr-[-3px]">
+            <div className="flex items-center mr-[-3px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <Button onClick={() => deleteTodo(todo.id)} type="button">
                 <DeleteIcon />
               </Button>
