@@ -27,7 +27,7 @@ const Todos = () => {
     resolver: yupResolver(todoSchema),
   })
 
-  const { handleSubmit, clearErrors, setError } = methods
+  const { handleSubmit, clearErrors, setError, reset } = methods
 
   useEffect(() => {
     if (session) {
@@ -57,6 +57,8 @@ const Todos = () => {
       if (res.ok) {
         const newTodoItem = await res.json()
         setTodos([...todos, newTodoItem])
+
+        reset()
       } else {
         toast("Failed to add todo")
       }
@@ -191,7 +193,6 @@ const Todos = () => {
               name="newTodo"
               placeholder="Create something..."
               style="sm:w-[500px] w-[320px] h-[60px]"
-              title="Create todo"
             />
           </div>
 
