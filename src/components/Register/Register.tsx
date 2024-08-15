@@ -25,7 +25,7 @@ const Register = () => {
     setError,
     clearErrors,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = methods
 
   const onSubmit = async (data: IRegister) => {
@@ -42,7 +42,6 @@ const Register = () => {
 
       if (!res.ok) {
         const error = await res.json()
-
         setError("email", {
           message: error.error || "An error occurred",
           type: "manual",
@@ -75,7 +74,9 @@ const Register = () => {
         <InputField name="confirmPassword" placeholder="Confirm password" type="password" />
 
         <CustomButton
+          disabled={isSubmitting || !!Object.keys(errors).length}
           error={errors["root"]?.message as string}
+          loading={isSubmitting}
           style="sm:w-[420px]"
           text="Register"
         />

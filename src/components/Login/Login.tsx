@@ -4,7 +4,6 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { signIn } from "next-auth/react"
-import { useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 
 import { ILogin } from "@/interfaces"
@@ -14,8 +13,6 @@ import { CustomButton } from "../Button/Button"
 import { InputField } from "../InputField/InputField"
 
 const Login = () => {
-  const [loading, setLoading] = useState(false)
-
   const router = useRouter()
 
   const methods = useForm({
@@ -27,11 +24,10 @@ const Login = () => {
     setError,
     clearErrors,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = methods
 
   const onSubmit = async (data: ILogin) => {
-    setLoading(true)
     try {
       const res = await signIn("credentials", {
         email: data.email,
@@ -48,8 +44,6 @@ const Login = () => {
       }
     } catch (error) {
       setError("root", { message: "Something went wrong. Try again.", type: "manual" })
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -66,9 +60,9 @@ const Login = () => {
         <InputField name="password" placeholder="Password" type="password" />
 
         <CustomButton
-          disabled={loading || !!Object.keys(errors).length}
+          disabled={isSubmitting || !!Object.keys(errors).length}
           error={errors["root"]?.message as string}
-          loading={loading}
+          loading={isSubmitting}
           style="sm:w-[420px]"
           text="Login"
         />
