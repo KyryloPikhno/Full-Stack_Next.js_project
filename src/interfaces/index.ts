@@ -39,22 +39,23 @@ export interface ITodo {
   completed: boolean
 }
 
+export interface IUpdatedTodo {
+  body?: string
+  completed?: boolean
+}
+
 export interface ITodoProps {
   todo: ITodo
   deleteTodo: (value: string) => void
-  updateTodo: (
-    value: string,
-    updatedTodo: {
-      body?: string
-      completed?: boolean
-    },
-  ) => void
+  updateTodo: (value: string, updatedTodo: IUpdatedTodo) => void
 }
 
 export interface IButtonProps {
   text: string
   style?: string
   error?: string
+  loading?: boolean
+  disabled?: boolean
   onClick?: () => void
   type?: "button" | "reset" | "submit"
 }

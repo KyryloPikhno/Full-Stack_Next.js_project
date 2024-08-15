@@ -1,3 +1,4 @@
+import { Loader2 } from "lucide-react"
 import { FC } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -9,15 +10,19 @@ export const CustomButton: FC<IButtonProps> = ({
   onClick,
   style = "",
   type = "submit",
+  loading = false,
+  disabled = false,
 }) => {
   return (
     <div className="relative">
       <Button
-        className={`sm:w-[140px] w-[100px] sm:text-[14px] border-[2px] border-[#000000] text-[10px] ${style}`}
+        className={`flex gap-4 items-center sm:w-[140px] w-[100px] sm:text-[14px] border-[2px] border-[#000000] text-[10px] ${style}`}
+        disabled={disabled}
         onClick={onClick}
         type={type}
       >
-        {text}
+        {loading ? <Loader2 className="animate-spin w-4 h-4" /> : null}
+        {loading ? "Loading" : text}
       </Button>
 
       {error ? (
