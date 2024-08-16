@@ -30,7 +30,7 @@ export default function RootLayout({
           <link href="/favicon.ico" rel="icon" />
         </Head>
         <body>
-          <Theme className="flex flex-col items-center justify-between min-h-screen bg-[#FFFFFF]">
+          <Theme className="flex flex-col items-center justify-between sm:min-h-screen min-h-[88vh] bg-[#FFFFFF]">
             <Header />
             <main className={robotoMono.className}>{children}</main>
             <Footer />

@@ -69,7 +69,7 @@ const Todo: FC<ITodoProps> = ({ todo, updateTodo, deleteTodo }) => {
               </div>
               <div className="py-2 cursor-pointer" onDoubleClick={() => setIsEditing(true)}>
                 <p
-                  className={`text-lg sm:w-[400px] leading-[23px] break-words ${todo.completed ? "line-through" : ""}`}
+                  className={`text-lg sm:w-[400px] w-[58vw] leading-[23px] break-words ${todo.completed ? "line-through" : ""}`}
                 >
                   {todo.body}
                 </p>

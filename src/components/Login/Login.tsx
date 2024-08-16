@@ -52,7 +52,7 @@ const Login = () => {
       <h1 className="text-[30px] font-bold mb-4 text-center">Login</h1>
 
       <form
-        className="flex flex-col gap-4"
+        className="flex flex-col gap-4 items-center"
         onChange={() => clearErrors()}
         onSubmit={handleSubmit(onSubmit)}
       >
@@ -68,7 +68,7 @@ const Login = () => {
         />
 
         <Link className="text-center text-[12px]" href="/auth/register">
-          Or <span className="underline">register</span> if you are new
+          Or <span className="underline">register</span> if you are new.
         </Link>
       </form>
     </FormProvider>

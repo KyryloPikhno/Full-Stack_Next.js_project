@@ -23,7 +23,7 @@ export const InputField: FC<IInputProps> = ({
       {title ? <div className="ml-[0.5px] mb-1 text-[12px] leading-[18px]">{title}</div> : null}
       <Input
         {...register(name)}
-        className={`sm:w-[420px] ${style}`}
+        className={`sm:w-[420px] w-[70vw] ${style}`}
         placeholder={placeholder}
         type={type}
       />

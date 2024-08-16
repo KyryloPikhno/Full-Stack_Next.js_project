@@ -63,12 +63,14 @@ const Register = () => {
       <h1 className="text-[30px] font-bold mb-4 text-center">Register</h1>
 
       <form
-        className="flex flex-col gap-4"
+        className="flex flex-col gap-4 items-center"
         onChange={() => clearErrors()}
         onSubmit={handleSubmit(onSubmit)}
       >
-        <InputField name="firstName" placeholder="First name" />
-        <InputField name="lastName" placeholder="Last name" />
+        <div className="flex sm:flex-row flex-col sm:gap-2 gap-4">
+          <InputField name="firstName" placeholder="First name" style="sm:!w-[206px]" />
+          <InputField name="lastName" placeholder="Last name" style="sm:!w-[206px]" />
+        </div>
         <InputField name="email" placeholder="Email" />
         <InputField name="password" placeholder="Password" type="password" />
         <InputField name="confirmPassword" placeholder="Confirm password" type="password" />

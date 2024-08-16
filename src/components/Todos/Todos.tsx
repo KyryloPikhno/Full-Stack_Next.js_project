@@ -191,7 +191,7 @@ const Todos = () => {
           type="button"
         />
         <div
-          className={`transition-opacity duration-300 ${isAnyTodoCompleted ? "opacity-100" : "opacity-0"}`}
+          className={`transition-opacity duration-300 ${isAnyTodoCompleted ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         >
           <CustomButton onClick={clearCompletedTodos} text="Clear completed" type="button" />
         </div>
@@ -209,7 +209,7 @@ const Todos = () => {
             <InputField
               name="newTodo"
               placeholder="Create something..."
-              style="sm:w-[500px] w-[320px] h-[60px]"
+              style="sm:w-[500px] w-full h-[60px]"
             />
 
             <div
