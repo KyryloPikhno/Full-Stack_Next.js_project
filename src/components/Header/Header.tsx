@@ -4,6 +4,8 @@ import { usePathname, useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { signOut } from "next-auth/react"
 
+import { toast } from "@/utils/toast"
+
 import { CustomButton } from "../Button/Button"
 
 export const Header = () => {
@@ -17,23 +19,20 @@ export const Header = () => {
       await signOut({ redirect: false })
       router.push("/auth/login")
     } catch (error) {
-      console.error("Logout error:", error)
+      toast()
+      toast((error as Error).message)
     }
   }
 
-  const fullName = `${session?.user?.firstName ?? ""} ${session?.user?.lastName ?? ""}`
+  const fullName = `${session?.user?.firstName[0]}. ${session?.user?.lastName}`
 
   return (
-    <div className="w-full flex justify-end h-20 pr-10 items-center gap-[20px]">
+    <div className="w-full flex justify-end h-20 sm:pr-10 pr-6 items-center sm:gap-4 gap-2">
       {session ? (
         <>
-          <p>{fullName}</p>
+          <p className="sm:text-[14px] text-[10px] font-medium">{fullName}</p>
           {session && pathname !== "/todos" && status === "authenticated" ? (
-            <CustomButton
-              onClick={() => router.push("/todos")}
-              style="w-auto"
-              text="Return to todos"
-            />
+            <CustomButton onClick={() => router.push("/todos")} style="w-auto" text="Todos" />
           ) : null}
 
           <CustomButton onClick={handleLogout} style="w-auto" text="Logout" />
