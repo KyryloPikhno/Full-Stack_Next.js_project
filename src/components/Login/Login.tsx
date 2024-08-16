@@ -52,7 +52,7 @@ const Login = () => {
       <h1 className="text-[30px] font-bold mb-4 text-center">Login</h1>
 
       <form
-        className="flex flex-col gap-4 items-center"
+        className="flex flex-col gap-4 items-center sm:mb-[80px]"
         onChange={() => clearErrors()}
         onSubmit={handleSubmit(onSubmit)}
       >
